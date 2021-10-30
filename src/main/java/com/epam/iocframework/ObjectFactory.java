@@ -1,33 +1,27 @@
-package com.epam;
+package com.epam.iocframework;
 
-import lombok.Setter;
+import com.epam.iocframework.object_configurator.ObjectConfigurator;
+import com.epam.iocframework.proxy_configurator.ProxyConfigurator;
 import lombok.SneakyThrows;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
 
 /**
  * @author Evgeny Borisov
  */
 public class ObjectFactory {
     private final ApplicationContext context;
-    private List<ObjectConfigurator> configurators = new ArrayList<>();
-    private List<ProxyConfigurator> proxyConfigurators = new ArrayList<>();
-
+    private final List<ObjectConfigurator> configurators = new ArrayList<>();
+    private final List<ProxyConfigurator> proxyConfigurators = new ArrayList<>();
 
 
     @SneakyThrows
     public ObjectFactory(ApplicationContext context) {
-        this.context= context;
+        this.context = context;
         for (Class<? extends ObjectConfigurator> aClass : context.getConfig().getScanner().getSubTypesOf(ObjectConfigurator.class)) {
             configurators.add(aClass.getDeclaredConstructor().newInstance());
         }
@@ -46,14 +40,12 @@ public class ObjectFactory {
 
         invokeInit(implClass, t);
 
-
         t = wrapWithProxyIfNeeded(implClass, t);
 
-
         return t;
-
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T wrapWithProxyIfNeeded(Class<T> implClass, T t) {
         for (ProxyConfigurator proxyConfigurator : proxyConfigurators) {
             t = (T) proxyConfigurator.replaceWithProxyIfNeeded(t, implClass);
@@ -70,7 +62,7 @@ public class ObjectFactory {
     }
 
     private <T> void configure(T t) {
-        configurators.forEach(objectConfigurator -> objectConfigurator.configure(t,context));
+        configurators.forEach(objectConfigurator -> objectConfigurator.configure(t, context));
     }
 
     private <T> T create(Class<T> implClass) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {

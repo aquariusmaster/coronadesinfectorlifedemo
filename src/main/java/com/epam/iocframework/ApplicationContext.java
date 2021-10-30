@@ -1,5 +1,7 @@
-package com.epam;
+package com.epam.iocframework;
 
+import com.epam.iocframework.annotation.Singleton;
+import com.epam.iocframework.config.Config;
 import lombok.Getter;
 import lombok.Setter;
 

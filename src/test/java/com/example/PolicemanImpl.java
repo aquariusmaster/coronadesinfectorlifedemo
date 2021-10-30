@@ -1,4 +1,6 @@
-package com.epam;
+package com.example;
+
+import com.epam.iocframework.annotation.InjectByType;
 
 import javax.annotation.PostConstruct;
 

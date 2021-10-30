@@ -1,4 +1,6 @@
-package com.epam;
+package com.example;
+
+import com.epam.iocframework.annotation.InjectByType;
 
 /**
  * @author Evgeny Borisov
@@ -6,6 +8,7 @@ package com.epam;
 public class ConsoleAnnouncer implements Announcer {
     @InjectByType
     private Recommendator recommendator;
+
     @Override
     public void announce(String message) {
         System.out.println(message);

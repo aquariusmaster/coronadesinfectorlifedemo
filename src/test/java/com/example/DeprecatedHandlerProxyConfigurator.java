@@ -1,8 +1,8 @@
-package com.epam;
+package com.example;
 
+import com.epam.iocframework.proxy_configurator.ProxyConfigurator;
 import net.sf.cglib.proxy.Enhancer;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -17,21 +17,11 @@ public class DeprecatedHandlerProxyConfigurator implements ProxyConfigurator {
         if (implClass.isAnnotationPresent(Deprecated.class)) {
 
             if (implClass.getInterfaces().length == 0) {
-                return Enhancer.create(implClass, new net.sf.cglib.proxy.InvocationHandler() {
-                    @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                        return getInvocationHandlerLogic(method, args, t);
-                    }
-                });
+                return Enhancer.create(implClass, (net.sf.cglib.proxy.InvocationHandler) (proxy, method, args) -> getInvocationHandlerLogic(method, args, t));
             }
 
 
-            return Proxy.newProxyInstance(implClass.getClassLoader(), implClass.getInterfaces(), new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    return getInvocationHandlerLogic(method, args, t);
-                }
-            });
+            return Proxy.newProxyInstance(implClass.getClassLoader(), implClass.getInterfaces(), (proxy, method, args) -> getInvocationHandlerLogic(method, args, t));
         } else {
             return t;
         }

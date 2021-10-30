@@ -1,4 +1,4 @@
-package com.epam;
+package com.epam.iocframework.proxy_configurator;
 
 /**
  * @author Evgeny Borisov

@@ -1,4 +1,4 @@
-package com.epam;
+package com.epam.iocframework.config;
 
 import lombok.Getter;
 import org.reflections.Reflections;
@@ -17,7 +17,7 @@ public class JavaConfig implements Config {
 
     public JavaConfig(String packageToScan, Map<Class, Class> ifc2ImplClass) {
         this.ifc2ImplClass = ifc2ImplClass;
-        this.scanner = new Reflections(packageToScan);
+        this.scanner = new Reflections("com.epam.iocframework", packageToScan);
     }
 
     @Override

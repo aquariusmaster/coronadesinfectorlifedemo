@@ -1,5 +1,7 @@
-package com.epam;
+package com.epam.iocframework.object_configurator;
 
+import com.epam.iocframework.ApplicationContext;
+import com.epam.iocframework.annotation.InjectByType;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;

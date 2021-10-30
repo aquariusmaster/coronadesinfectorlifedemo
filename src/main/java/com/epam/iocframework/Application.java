@@ -1,4 +1,6 @@
-package com.epam;
+package com.epam.iocframework;
+
+import com.epam.iocframework.config.JavaConfig;
 
 import java.util.Map;
 

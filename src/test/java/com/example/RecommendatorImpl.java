@@ -1,4 +1,7 @@
-package com.epam;
+package com.example;
+
+import com.epam.iocframework.annotation.InjectProperty;
+import com.epam.iocframework.annotation.Singleton;
 
 /**
  * @author Evgeny Borisov
@@ -14,6 +17,6 @@ public class RecommendatorImpl implements Recommendator {
 
     @Override
     public void recommend() {
-        System.out.println("to protect from covid-2019, drink "+alcohol);
+        System.out.println("to protect from covid-2019, drink " + alcohol);
     }
 }

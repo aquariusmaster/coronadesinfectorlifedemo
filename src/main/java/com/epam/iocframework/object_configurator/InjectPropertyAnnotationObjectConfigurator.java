@@ -1,5 +1,7 @@
-package com.epam;
+package com.epam.iocframework.object_configurator;
 
+import com.epam.iocframework.ApplicationContext;
+import com.epam.iocframework.annotation.InjectProperty;
 import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
@@ -15,7 +17,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class InjectPropertyAnnotationObjectConfigurator implements ObjectConfigurator {
 
-    private Map<String, String> propertiesMap;
+    private final Map<String, String> propertiesMap;
 
     @SneakyThrows
     public InjectPropertyAnnotationObjectConfigurator() {
@@ -27,14 +29,14 @@ public class InjectPropertyAnnotationObjectConfigurator implements ObjectConfigu
 
     @Override
     @SneakyThrows
-    public void configure(Object t,ApplicationContext context) {
+    public void configure(Object t, ApplicationContext context) {
         Class<?> implClass = t.getClass();
         for (Field field : implClass.getDeclaredFields()) {
             InjectProperty annotation = field.getAnnotation(InjectProperty.class);
-           if (annotation != null) {
+            if (annotation != null) {
                 String value = annotation.value().isEmpty() ? propertiesMap.get(field.getName()) : propertiesMap.get(annotation.value());
                 field.setAccessible(true);
-                field.set(t,value);
+                field.set(t, value);
             }
         }
     }

@@ -1,6 +1,4 @@
-package com.epam;/**
- * @author Evgeny Borisov
- */
+package com.epam.iocframework.annotation;
 
 import java.lang.annotation.Retention;
 

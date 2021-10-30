@@ -1,9 +1,11 @@
-package com.epam;
+package com.example;
+
+import com.epam.iocframework.annotation.InjectByType;
 
 /**
  * @author Evgeny Borisov
  */
-
+@Deprecated
 public class CoronaDesinfector {
 
     @InjectByType
@@ -19,7 +21,7 @@ public class CoronaDesinfector {
         announcer.announce("Рискните зайти обратно");
     }
 
-    private void desinfect(Room room){
+    private void desinfect(Room room) {
         System.out.println("зачитывается молитва: 'корона изыди!' - молитва прочитана, вирус низвергнут в ад");
     }
 }

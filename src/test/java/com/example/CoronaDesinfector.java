@@ -13,7 +13,6 @@ public class CoronaDesinfector {
     @InjectByType
     private Policeman policeman;
 
-
     public void start(Room room) {
         announcer.announce("Начинаем дезинфекцию, всё вон!");
         policeman.makePeopleLeaveRoom();

@@ -12,6 +12,6 @@ public class ConsoleAnnouncer implements Announcer {
     @Override
     public void announce(String message) {
         System.out.println(message);
-        recommendator.recommend();
+        System.out.println(recommendator.recommend());
     }
 }

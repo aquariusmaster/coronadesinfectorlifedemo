@@ -2,6 +2,7 @@ package com.example;
 
 import com.epam.iocframework.annotation.InjectProperty;
 import com.epam.iocframework.annotation.Singleton;
+import com.example.cache.Cache;
 
 /**
  * @author Evgeny Borisov
@@ -16,7 +17,8 @@ public class RecommendatorImpl implements Recommendator {
     }
 
     @Override
-    public void recommend() {
-        System.out.println("to protect from covid-2019, drink " + alcohol);
+    @Cache
+    public String recommend() {
+        return "to protect from covid-2019, drink " + alcohol;
     }
 }

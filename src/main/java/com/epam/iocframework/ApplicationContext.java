@@ -15,7 +15,8 @@ public class ApplicationContext {
     @Setter
     private ObjectFactory factory;
     private final Map<Class, Object> cache = new ConcurrentHashMap<>();
-    private final Map<Class, Object> intermediateCreatingCache = new ConcurrentHashMap<>();
+    private ThreadLocal<Map<Class, Object>> threadLocalCache = ThreadLocal.withInitial(ConcurrentHashMap::new);
+
     @Getter
     private Config config;
 
@@ -27,8 +28,8 @@ public class ApplicationContext {
         if (cache.containsKey(type)) {
             return (T) cache.get(type);
         }
-        if (intermediateCreatingCache.containsKey(type)) {
-            return (T) intermediateCreatingCache.get(type);
+        if (threadLocalCache.get().containsKey(type)) {
+            return (T) threadLocalCache.get().get(type);
         }
 
         Class<? extends T> implClass = type;
@@ -37,9 +38,9 @@ public class ApplicationContext {
             implClass = config.getImplClass(type);
         }
         T t = factory.instantiate(implClass);
-        intermediateCreatingCache.put(type, t);
+        threadLocalCache.get().put(type, t);
         t = factory.prepare(t, implClass);
-        intermediateCreatingCache.remove(type);
+        threadLocalCache.get().remove(type);
         if (implClass.isAnnotationPresent(Singleton.class)) {
             cache.put(type, t);
         }

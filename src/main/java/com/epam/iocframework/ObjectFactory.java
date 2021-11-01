@@ -30,11 +30,13 @@ public class ObjectFactory {
         }
     }
 
+    @SneakyThrows
+    public <T> T instantiate(Class<T> implClass) {
+        return implClass.getDeclaredConstructor().newInstance();
+    }
 
     @SneakyThrows
-    public <T> T createObject(Class<T> implClass) {
-
-        T t = create(implClass);
+    public <T> T prepare(T t, Class<? extends T> implClass) {
 
         configure(t);
 
@@ -45,15 +47,11 @@ public class ObjectFactory {
         return t;
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T wrapWithProxyIfNeeded(Class<T> implClass, T t) {
-        for (ProxyConfigurator proxyConfigurator : proxyConfigurators) {
-            t = (T) proxyConfigurator.replaceWithProxyIfNeeded(t, implClass);
-        }
-        return t;
+    private <T> void configure(T t) {
+        configurators.forEach(objectConfigurator -> objectConfigurator.configure(t, context));
     }
 
-    private <T> void invokeInit(Class<T> implClass, T t) throws IllegalAccessException, InvocationTargetException {
+    private <T> void invokeInit(Class<? extends T> implClass, T t) throws IllegalAccessException, InvocationTargetException {
         for (Method method : implClass.getMethods()) {
             if (method.isAnnotationPresent(PostConstruct.class)) {
                 method.invoke(t);
@@ -61,13 +59,14 @@ public class ObjectFactory {
         }
     }
 
-    private <T> void configure(T t) {
-        configurators.forEach(objectConfigurator -> objectConfigurator.configure(t, context));
+    @SuppressWarnings("unchecked")
+    private <T> T wrapWithProxyIfNeeded(Class<? extends T> implClass, T t) {
+        for (ProxyConfigurator proxyConfigurator : proxyConfigurators) {
+            t = (T) proxyConfigurator.replaceWithProxyIfNeeded(t, implClass);
+        }
+        return t;
     }
 
-    private <T> T create(Class<T> implClass) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
-        return implClass.getDeclaredConstructor().newInstance();
-    }
 }
 
 

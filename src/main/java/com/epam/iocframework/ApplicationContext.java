@@ -14,7 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ApplicationContext {
     @Setter
     private ObjectFactory factory;
-    private Map<Class, Object> cache = new ConcurrentHashMap<>();
+    private final Map<Class, Object> cache = new ConcurrentHashMap<>();
+    private final Map<Class, Object> intermediateCreatingCache = new ConcurrentHashMap<>();
     @Getter
     private Config config;
 
@@ -26,18 +27,22 @@ public class ApplicationContext {
         if (cache.containsKey(type)) {
             return (T) cache.get(type);
         }
+        if (intermediateCreatingCache.containsKey(type)) {
+            return (T) intermediateCreatingCache.get(type);
+        }
 
         Class<? extends T> implClass = type;
 
         if (type.isInterface()) {
             implClass = config.getImplClass(type);
         }
-        T t = factory.createObject(implClass);
-
+        T t = factory.instantiate(implClass);
+        intermediateCreatingCache.put(type, t);
+        t = factory.prepare(t, implClass);
+        intermediateCreatingCache.remove(type);
         if (implClass.isAnnotationPresent(Singleton.class)) {
             cache.put(type, t);
         }
-
         return t;
     }
 }
